@@ -10,39 +10,68 @@ import type { Pair, TimeFrame, OhlcvBar } from "@/lib/api/types";
 import { formatUsd, formatNumber, formatPercent, formatAddress } from "@/lib/utils/format";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 
+function seededRandom(seed: number) {
+  let s = seed;
+  return () => {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    return s / 0x7fffffff;
+  };
+}
+
 function generateChart(pair: Pair, timeframe: TimeFrame): OhlcvBar[] {
   const currentPrice = parseFloat(pair.priceUsd || "0");
   if (!currentPrice) return [];
   const now = Math.floor(Date.now() / 1000);
-  const cfgs: Record<TimeFrame, { count: number; interval: number }> = {
-    "5m": { count: 120, interval: 300 },
-    "15m": { count: 96, interval: 900 },
-    "1h": { count: 72, interval: 3600 },
-    "4h": { count: 48, interval: 14400 },
-    "1d": { count: 30, interval: 86400 },
-    "1w": { count: 20, interval: 604800 },
+  const cfgs: Record<TimeFrame, { count: number; interval: number; vol: number }> = {
+    "5m": { count: 120, interval: 300, vol: 0.012 },
+    "15m": { count: 96, interval: 900, vol: 0.018 },
+    "1h": { count: 72, interval: 3600, vol: 0.03 },
+    "4h": { count: 48, interval: 14400, vol: 0.045 },
+    "1d": { count: 30, interval: 86400, vol: 0.06 },
+    "1w": { count: 20, interval: 604800, vol: 0.10 },
   };
-  const { count, interval } = cfgs[timeframe];
+  const { count, interval, vol } = cfgs[timeframe];
   const change24h = (pair.priceChange?.h24 ?? 0) / 100;
   const startPrice = currentPrice / (1 + (change24h || 0.01));
   const seed = pair.pairAddress.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const rand = seededRandom(seed);
+
   let price = startPrice;
   const drift = (currentPrice - startPrice) / count;
   const bars: OhlcvBar[] = [];
+
   for (let i = 0; i < count; i++) {
     const t = now - (count - i) * interval;
-    const n = Math.sin(seed * (i + 1) * 0.1) * 0.02 * price + Math.cos(seed * (i + 2) * 0.07) * 0.015 * price;
-    price = Math.max(price + drift + n, currentPrice * 0.01);
-    const v = price * 0.008;
-    const o = price - n * 0.3;
-    const c = price;
+
+    // Random walk with momentum
+    const r1 = (rand() - 0.5) * 2;
+    const r2 = (rand() - 0.5) * 2;
+    const r3 = rand();
+    const r4 = rand();
+
+    const move = drift + r1 * vol * price;
+    const open = price;
+    price = Math.max(price + move, currentPrice * 0.01);
+    const close = price;
+
+    // Body size variation — some candles have big bodies, some small
+    const bodySpread = Math.abs(close - open);
+    // Wicks extend beyond the body
+    const upperWick = bodySpread * (0.3 + r3 * 1.5) + price * vol * 0.3;
+    const lowerWick = bodySpread * (0.3 + r4 * 1.5) + price * vol * 0.3;
+    // Occasional long wicks (doji-like)
+    const wickBoost = r2 > 0.8 ? price * vol * 0.8 : 0;
+
+    const high = Math.max(open, close) + upperWick + wickBoost;
+    const low = Math.max(Math.min(open, close) - lowerWick - wickBoost, 1e-15);
+
     bars.push({
       time: t,
-      open: Math.max(o, 1e-15),
-      high: Math.max(Math.max(o, c) + Math.abs(v), 1e-15),
-      low: Math.max(Math.min(o, c) - Math.abs(v), 1e-15),
-      close: Math.max(c, 1e-15),
-      volume: ((pair.volume?.h24 ?? 0) / count) * (0.5 + Math.abs(Math.sin(i * 0.5))),
+      open: Math.max(open, 1e-15),
+      high: Math.max(high, 1e-15),
+      low,
+      close: Math.max(close, 1e-15),
+      volume: ((pair.volume?.h24 ?? 0) / count) * (0.3 + rand() * 1.4),
     });
   }
   return bars;
