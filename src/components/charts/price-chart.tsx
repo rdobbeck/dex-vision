@@ -144,10 +144,6 @@ export function PriceChart({
     chart.timeScale().fitContent();
   }, [data]);
 
-  if (isLoading) {
-    return <Skeleton className="w-full h-[400px] rounded-lg" />;
-  }
-
   return (
     <div className="w-full">
       <div className="flex items-center gap-1 mb-2">
@@ -163,7 +159,14 @@ export function PriceChart({
           </Button>
         ))}
       </div>
-      <div ref={containerRef} className="w-full h-[400px]" />
+      <div className="relative w-full h-[400px]">
+        <div ref={containerRef} className="w-full h-full" />
+        {isLoading && (
+          <div className="absolute inset-0">
+            <Skeleton className="w-full h-full rounded-lg" />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
