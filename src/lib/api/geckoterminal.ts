@@ -82,7 +82,6 @@ export async function getOhlcv(
 
   const res = await fetch(url, {
     headers: { Accept: "application/json" },
-    next: { revalidate: 30 },
   });
 
   if (!res.ok) {
