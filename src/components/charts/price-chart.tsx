@@ -39,6 +39,8 @@ export function PriceChart({
 }: PriceChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const seriesRef = useRef<any[]>([]);
 
   // Create chart once, destroy on unmount
   useEffect(() => {
@@ -91,17 +93,15 @@ export function PriceChart({
     const chart = chartRef.current;
     if (!chart || !data || data.length === 0) return;
 
-    // Remove all existing series and re-add
-    // This is simpler than tracking series refs across renders
-    try {
-      // Clear previous series by removing them
-      const series = chart.getSeries();
-      for (const s of series) {
+    // Remove previously tracked series
+    for (const s of seriesRef.current) {
+      try {
         chart.removeSeries(s);
+      } catch {
+        // ignore if already removed
       }
-    } catch {
-      // ignore if no series exist
     }
+    seriesRef.current = [];
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
       upColor: "#22c55e",
@@ -140,6 +140,7 @@ export function PriceChart({
 
     candleSeries.setData(candleData);
     volumeSeries.setData(volumeData);
+    seriesRef.current = [candleSeries, volumeSeries];
     chart.timeScale().fitContent();
   }, [data]);
 
