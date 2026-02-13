@@ -53,18 +53,18 @@ export function PriceChart({
         fontSize: 12,
       },
       grid: {
-        vertLines: { color: "rgba(255, 255, 255, 0.04)" },
-        horzLines: { color: "rgba(255, 255, 255, 0.04)" },
+        vertLines: { color: "rgba(42, 46, 57, 0.6)" },
+        horzLines: { color: "rgba(42, 46, 57, 0.6)" },
       },
       crosshair: {
-        vertLine: { color: "rgba(255, 255, 255, 0.2)" },
-        horzLine: { color: "rgba(255, 255, 255, 0.2)" },
+        vertLine: { color: "rgba(42, 46, 57, 0.9)" },
+        horzLine: { color: "rgba(42, 46, 57, 0.9)" },
       },
       rightPriceScale: {
-        borderColor: "rgba(255, 255, 255, 0.1)",
+        borderColor: "rgba(42, 46, 57, 0.6)",
       },
       timeScale: {
-        borderColor: "rgba(255, 255, 255, 0.1)",
+        borderColor: "rgba(42, 46, 57, 0.6)",
         timeVisible: true,
       },
       handleScroll: true,
@@ -104,12 +104,12 @@ export function PriceChart({
     seriesRef.current = [];
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
-      upColor: "#22c55e",
-      downColor: "#ef4444",
-      borderDownColor: "#ef4444",
-      borderUpColor: "#22c55e",
-      wickDownColor: "#ef4444",
-      wickUpColor: "#22c55e",
+      upColor: "#39be78",
+      downColor: "#f45b5b",
+      borderDownColor: "#f45b5b",
+      borderUpColor: "#39be78",
+      wickDownColor: "#f45b5b",
+      wickUpColor: "#39be78",
     });
 
     const volumeSeries = chart.addSeries(HistogramSeries, {
@@ -134,8 +134,8 @@ export function PriceChart({
       value: bar.volume,
       color:
         bar.close >= bar.open
-          ? "rgba(34, 197, 94, 0.3)"
-          : "rgba(239, 68, 68, 0.3)",
+          ? "rgba(57, 190, 120, 0.3)"
+          : "rgba(244, 91, 91, 0.3)",
     }));
 
     candleSeries.setData(candleData);
@@ -159,7 +159,7 @@ export function PriceChart({
           </Button>
         ))}
       </div>
-      <div className="relative w-full h-[400px]">
+      <div className="relative w-full h-[500px] lg:h-[600px]">
         <div ref={containerRef} className="w-full h-full" />
         {isLoading && (
           <div className="absolute inset-0">

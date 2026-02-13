@@ -5,48 +5,65 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { useSearch } from "@/lib/hooks/use-search";
 import { useChainStore } from "@/lib/stores/chain-store";
 import { SUPPORTED_CHAINS } from "@/lib/api/types";
 import { formatUsd } from "@/lib/utils/format";
+import { Search, Menu } from "lucide-react";
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { data: results } = useSearch(searchQuery);
   const { selectedChain, setSelectedChain } = useChainStore();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-14 items-center gap-4 px-4">
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg">
-          <span className="text-primary">DexVision</span>
+    <header className="sticky top-0 z-50 border-b border-border bg-card">
+      <div className="flex h-14 items-center gap-4 px-4 max-w-[1800px] mx-auto">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-1 shrink-0">
+          <span className="font-heading text-lg font-bold tracking-tight">
+            <span className="text-primary">Dex</span>
+            <span className="text-foreground">Vision</span>
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
-          <Link href="/">
-            <Button variant="ghost" size="sm">
-              Trending
-            </Button>
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-4 ml-2">
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Trending
           </Link>
-          <Link href="/tokens">
-            <Button variant="ghost" size="sm">
-              Tokens
-            </Button>
+          <Link
+            href="/tokens"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Tokens
           </Link>
-          <Link href="/darkpool">
-            <Button variant="ghost" size="sm">
-              <span className="flex items-center gap-1">
-                Dark Pool
-                <Badge variant="secondary" className="text-[10px] px-1 py-0">
-                  NEW
-                </Badge>
-              </span>
-            </Button>
+          <Link
+            href="/darkpool"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+          >
+            Dark Pool
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-medium">
+              NEW
+            </Badge>
           </Link>
         </nav>
 
-        <div className="flex-1 max-w-md relative">
+        {/* Search */}
+        <div className="flex-1 max-w-md relative ml-auto">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
           <Input
             placeholder="Search tokens, pairs, or addresses..."
             value={searchQuery}
@@ -56,7 +73,7 @@ export function Header() {
             }}
             onFocus={() => setShowResults(true)}
             onBlur={() => setTimeout(() => setShowResults(false), 200)}
-            className="h-9 bg-muted/50"
+            className="h-8 pl-8 bg-background border-border text-sm"
           />
           {showResults && results && results.length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-md shadow-lg max-h-80 overflow-y-auto z-50">
@@ -77,7 +94,7 @@ export function Header() {
                     </span>
                   </div>
                   {result.priceUsd && (
-                    <span className="text-sm font-mono">
+                    <span className="text-sm font-data">
                       {formatUsd(result.priceUsd)}
                     </span>
                   )}
@@ -87,27 +104,110 @@ export function Header() {
           )}
         </div>
 
+        {/* Chain filter pills - desktop */}
         <div className="hidden lg:flex items-center gap-1">
-          <Button
-            variant={selectedChain === null ? "secondary" : "ghost"}
-            size="sm"
-            className="text-xs h-7"
+          <button
+            className={`text-[11px] uppercase tracking-wider font-medium px-2.5 py-1 rounded-full transition-colors ${
+              selectedChain === null
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            }`}
             onClick={() => setSelectedChain(null)}
           >
             All
-          </Button>
+          </button>
           {SUPPORTED_CHAINS.slice(0, 8).map((chain) => (
-            <Button
+            <button
               key={chain.id}
-              variant={selectedChain === chain.id ? "secondary" : "ghost"}
-              size="sm"
-              className="text-xs h-7"
+              className={`text-[11px] uppercase tracking-wider font-medium px-2.5 py-1 rounded-full transition-colors ${
+                selectedChain === chain.id
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
               onClick={() => setSelectedChain(chain.id)}
             >
               {chain.name}
-            </Button>
+            </button>
           ))}
         </div>
+
+        {/* Mobile hamburger */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="sm" className="md:hidden h-8 w-8 p-0">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-72">
+            <SheetHeader>
+              <SheetTitle className="font-heading">
+                <span className="text-primary">Dex</span>Vision
+              </SheetTitle>
+            </SheetHeader>
+            <nav className="flex flex-col gap-2 px-4">
+              <Link
+                href="/"
+                className="text-sm py-2 text-foreground hover:text-primary transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                Trending
+              </Link>
+              <Link
+                href="/tokens"
+                className="text-sm py-2 text-foreground hover:text-primary transition-colors"
+                onClick={() => setMobileOpen(false)}
+              >
+                Tokens
+              </Link>
+              <Link
+                href="/darkpool"
+                className="text-sm py-2 text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                onClick={() => setMobileOpen(false)}
+              >
+                Dark Pool
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                  NEW
+                </Badge>
+              </Link>
+            </nav>
+            <div className="px-4 pt-4">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-2">
+                Chains
+              </div>
+              <div className="flex flex-wrap gap-1">
+                <button
+                  className={`text-[11px] uppercase tracking-wider font-medium px-2.5 py-1 rounded-full transition-colors ${
+                    selectedChain === null
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                  onClick={() => {
+                    setSelectedChain(null);
+                    setMobileOpen(false);
+                  }}
+                >
+                  All
+                </button>
+                {SUPPORTED_CHAINS.map((chain) => (
+                  <button
+                    key={chain.id}
+                    className={`text-[11px] uppercase tracking-wider font-medium px-2.5 py-1 rounded-full transition-colors ${
+                      selectedChain === chain.id
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                    onClick={() => {
+                      setSelectedChain(chain.id);
+                      setMobileOpen(false);
+                    }}
+                  >
+                    {chain.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );
