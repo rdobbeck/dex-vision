@@ -96,7 +96,7 @@ export function Header() {
           >
             All
           </Button>
-          {SUPPORTED_CHAINS.slice(0, 6).map((chain) => (
+          {SUPPORTED_CHAINS.slice(0, 8).map((chain) => (
             <Button
               key={chain.id}
               variant={selectedChain === chain.id ? "secondary" : "ghost"}

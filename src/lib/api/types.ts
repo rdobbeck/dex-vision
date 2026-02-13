@@ -79,6 +79,8 @@ export const SUPPORTED_CHAINS: ChainInfo[] = [
   { id: "ethereum", name: "Ethereum", icon: "/chains/ethereum.svg" },
   { id: "solana", name: "Solana", icon: "/chains/solana.svg" },
   { id: "base", name: "Base", icon: "/chains/base.svg" },
+  { id: "pulsechain", name: "PulseChain", icon: "/chains/pulsechain.svg" },
+  { id: "quai", name: "Quai", icon: "/chains/quai.svg" },
   { id: "arbitrum", name: "Arbitrum", icon: "/chains/arbitrum.svg" },
   { id: "polygon", name: "Polygon", icon: "/chains/polygon.svg" },
   { id: "bsc", name: "BSC", icon: "/chains/bsc.svg" },
