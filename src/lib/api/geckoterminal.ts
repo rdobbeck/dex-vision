@@ -21,12 +21,12 @@ const TIMEFRAME_MAP: Record<
   TimeFrame,
   { endpoint: string; aggregate: number; limit: number }
 > = {
-  "5m": { endpoint: "minute", aggregate: 5, limit: 200 },
-  "15m": { endpoint: "minute", aggregate: 15, limit: 200 },
-  "1h": { endpoint: "hour", aggregate: 1, limit: 168 },
-  "4h": { endpoint: "hour", aggregate: 4, limit: 120 },
-  "1d": { endpoint: "day", aggregate: 1, limit: 90 },
-  "1w": { endpoint: "day", aggregate: 1, limit: 140 }, // aggregate to weekly client-side
+  "5m": { endpoint: "minute", aggregate: 5, limit: 1000 },
+  "15m": { endpoint: "minute", aggregate: 15, limit: 1000 },
+  "1h": { endpoint: "hour", aggregate: 1, limit: 1000 },
+  "4h": { endpoint: "hour", aggregate: 4, limit: 1000 },
+  "1d": { endpoint: "day", aggregate: 1, limit: 1000 },
+  "1w": { endpoint: "day", aggregate: 1, limit: 1000 }, // aggregate to weekly client-side
 };
 
 interface GeckoOhlcvResponse {
