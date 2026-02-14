@@ -125,4 +125,15 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  @keyframes flash-green {
+    0% { background-color: rgba(57, 190, 120, 0.2); }
+    100% { background-color: transparent; }
+  }
+  @keyframes flash-red {
+    0% { background-color: rgba(244, 91, 91, 0.2); }
+    100% { background-color: transparent; }
+  }
+  .animate-flash-green { animation: flash-green 0.6s ease-out; }
+  .animate-flash-red { animation: flash-red 0.6s ease-out; }
 }

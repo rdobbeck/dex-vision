@@ -16,6 +16,7 @@ export default function PairPage({
   const { data: pairs, isLoading } = useQuery({
     queryKey: ["pair-detail", chain, pairAddress],
     queryFn: () => getPairsByChain(chain, pairAddress),
+    refetchInterval: 10_000,
   });
 
   if (isLoading) {

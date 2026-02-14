@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Table,
@@ -30,14 +30,44 @@ export function PairTable({ pairs, isLoading }: PairTableProps) {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
 
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDir(sortDir === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDir("desc");
+  // Track previous prices for flash animation
+  const prevPricesRef = useRef<Map<string, string>>(new Map());
+  const [flashStates, setFlashStates] = useState<Map<string, "green" | "red">>(new Map());
+
+  useEffect(() => {
+    const prev = prevPricesRef.current;
+    const newFlashes = new Map<string, "green" | "red">();
+
+    for (const pair of pairs) {
+      const key = `${pair.chainId}-${pair.pairAddress}`;
+      const prevPrice = prev.get(key);
+      const currentPrice = pair.priceUsd || "0";
+
+      if (prevPrice && prevPrice !== currentPrice) {
+        const diff = parseFloat(currentPrice) - parseFloat(prevPrice);
+        if (diff > 0) newFlashes.set(key, "green");
+        else if (diff < 0) newFlashes.set(key, "red");
+      }
+      prev.set(key, currentPrice);
     }
-  };
+
+    if (newFlashes.size > 0) {
+      setFlashStates(newFlashes);
+      const timeout = setTimeout(() => setFlashStates(new Map()), 600);
+      return () => clearTimeout(timeout);
+    }
+  }, [pairs]);
+
+  const handleSort = useCallback((field: SortField) => {
+    setSortField((prev) => {
+      if (prev === field) {
+        setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+        return prev;
+      }
+      setSortDir("desc");
+      return field;
+    });
+  }, []);
 
   const sorted = [...pairs].sort((a, b) => {
     let aVal: number, bVal: number;
@@ -130,11 +160,19 @@ export function PairTable({ pairs, isLoading }: PairTableProps) {
               const totalTxns =
                 (pair.txns?.h24?.buys ?? 0) + (pair.txns?.h24?.sells ?? 0);
               const fav = isFavorite(pair.pairAddress);
+              const pairKey = `${pair.chainId}-${pair.pairAddress}`;
+              const flash = flashStates.get(pairKey);
 
               return (
                 <TableRow
-                  key={`${pair.chainId}-${pair.pairAddress}`}
-                  className="hover:bg-muted/20 transition-colors h-[47px]"
+                  key={pairKey}
+                  className={`hover:bg-muted/20 transition-colors h-[47px] ${
+                    flash === "green"
+                      ? "animate-flash-green"
+                      : flash === "red"
+                        ? "animate-flash-red"
+                        : ""
+                  }`}
                 >
                   <TableCell className="text-muted-foreground text-xs font-data">
                     {index + 1}

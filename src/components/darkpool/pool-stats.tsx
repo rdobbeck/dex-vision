@@ -61,13 +61,13 @@ export function PoolStats() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Active Batches</h2>
+      <h2 className="text-lg font-heading font-semibold">Active Batches</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {DEMO_BATCHES.map((batch) => (
           <Card key={batch.id}>
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-sm font-heading font-medium">
                   {batch.tokenA}/{batch.tokenB}
                 </CardTitle>
                 <Badge className={phaseColors[batch.phase]}>
@@ -81,26 +81,26 @@ export function PoolStats() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Commit deadline</span>
-                <span>{batch.commitDeadline}</span>
+                <span className="font-data">{batch.commitDeadline}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Reveal deadline</span>
-                <span>{batch.revealDeadline}</span>
+                <span className="font-data">{batch.revealDeadline}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Commitments</span>
-                <span>{batch.totalCommitments}</span>
+                <span className="font-data">{batch.totalCommitments}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Revealed</span>
-                <span>
+                <span className="font-data">
                   {batch.totalRevealed}/{batch.totalCommitments}
                 </span>
               </div>
               {batch.clearingPrice && (
                 <div className="flex justify-between font-medium">
                   <span className="text-muted-foreground">Clearing Price</span>
-                  <span className="text-green-400">{batch.clearingPrice}</span>
+                  <span className="text-[#39be78] font-data">{batch.clearingPrice}</span>
                 </div>
               )}
             </CardContent>

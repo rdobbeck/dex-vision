@@ -30,7 +30,7 @@ export function DarkPoolSwap({ onCommit }: DarkPoolSwapProps) {
     <Card className="max-w-md mx-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Dark Pool Swap</CardTitle>
+          <CardTitle className="text-lg font-heading">Dark Pool Swap</CardTitle>
           <Badge className={phaseColors[phase]}>{phase} Phase</Badge>
         </div>
         <p className="text-xs text-muted-foreground">
@@ -119,15 +119,15 @@ export function DarkPoolSwap({ onCommit }: DarkPoolSwapProps) {
           </div>
           <div className="flex justify-between text-muted-foreground">
             <span>MEV Protection</span>
-            <span className="text-green-400">Commit-reveal</span>
+            <span className="text-[#39be78]">Commit-reveal</span>
           </div>
           <div className="flex justify-between text-muted-foreground">
             <span>Fee</span>
-            <span>0.1% LP fee</span>
+            <span className="font-data">0.1% LP fee</span>
           </div>
           <div className="flex justify-between text-muted-foreground">
             <span>Bond required</span>
-            <span>0.001 ETH (refunded on reveal)</span>
+            <span className="font-data">0.001 ETH (refunded on reveal)</span>
           </div>
         </div>
 
