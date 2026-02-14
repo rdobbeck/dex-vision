@@ -25,9 +25,9 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "DexVision - DEX Analytics & Dark Pool AMM",
+  title: "DexVision - DEX Analytics",
   description:
-    "Open-source DEX analytics platform with real-time pair tracking, charts, and a privacy-preserving dark pool AMM.",
+    "Open-source DEX analytics platform with real-time pair tracking and charts.",
 };
 
 export default function RootLayout({

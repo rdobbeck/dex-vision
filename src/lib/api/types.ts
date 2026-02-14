@@ -99,35 +99,3 @@ export interface SearchResult {
   priceUsd?: string;
   volume24h?: number;
 }
-
-// Dark Pool types
-export enum BatchPhase {
-  COMMIT = "COMMIT",
-  REVEAL = "REVEAL",
-  SETTLEMENT = "SETTLEMENT",
-  CLOSED = "CLOSED",
-}
-
-export interface DarkPoolOrder {
-  id: string;
-  commitment: string;
-  tokenIn: string;
-  tokenOut: string;
-  amountIn: string;
-  minPrice: string;
-  phase: BatchPhase;
-  revealed: boolean;
-  settled: boolean;
-}
-
-export interface DarkPoolBatch {
-  id: number;
-  tokenA: string;
-  tokenB: string;
-  phase: BatchPhase;
-  commitDeadline: number;
-  revealDeadline: number;
-  totalCommitments: number;
-  totalRevealed: number;
-  clearingPrice?: string;
-}

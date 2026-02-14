@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Sheet,
   SheetTrigger,
@@ -49,15 +48,6 @@ export function Header() {
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Tokens
-          </Link>
-          <Link
-            href="/darkpool"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-          >
-            Dark Pool
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-medium">
-              NEW
-            </Badge>
           </Link>
         </nav>
 
@@ -158,16 +148,6 @@ export function Header() {
                 onClick={() => setMobileOpen(false)}
               >
                 Tokens
-              </Link>
-              <Link
-                href="/darkpool"
-                className="text-sm py-2 text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
-                onClick={() => setMobileOpen(false)}
-              >
-                Dark Pool
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
-                  NEW
-                </Badge>
               </Link>
             </nav>
             <div className="px-4 pt-4">
